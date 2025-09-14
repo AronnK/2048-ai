@@ -74,9 +74,9 @@ batch_size = 64
 gamma = 0.99
 epsilon = 1.0
 eps_min = 0.02
-eps_decay = 0.99997
-episodes = 15000
-target_update = 200
+eps_decay = 0.9999998
+episodes = 50000
+# target_update = 200
 best_avg_reward = -float('inf')
 reward_window = deque(maxlen=100)
 model_file = "2048_cnn_ddqn.pth"
@@ -87,8 +87,7 @@ if os.path.exists(model_file):
     qnet.load_state_dict(checkpoint['q_net'])
     tnet.load_state_dict(checkpoint['target_net'])
     optimizer.load_state_dict(checkpoint['optimizer'])
-    epsilon = checkpoint.get('epsilon', epsilon)
-
+    # epsilon = checkpoint.get('epsilon', epsilon)
 
 for epi in range(episodes):
     curr_state, info = env.reset()
