@@ -483,10 +483,10 @@ import numpy as np
 import game
 
 WEIGHT_MATRIX = np.array([
-    [10, 8, 7, 6.5],
-    [ 5, 4, 3, 2.5],
-    [ 2, 1, 0, -1 ],
-    [-2,-3,-4, -5 ]
+    [16, 12, 8, 4],
+    [ 8,  6,  4, 2],
+    [ 4,  2,  1, 0],
+    [ 2,  1,  0, 0]
 ])
 
 class Game2048Env(gym.Env):
@@ -630,8 +630,6 @@ class Game2048Env(gym.Env):
 
         if self.render_mode == 'human':
             self.render()
-
-        # DELETED the final reward clipping line that was here.
         return observation, float(total_reward), bool(terminated), bool(truncated), info
 
     def render(self, mode='human'):

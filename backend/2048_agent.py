@@ -64,22 +64,22 @@ qnet = CNN_DQN(in_channels, action_space_size).to(device)
 tnet = CNN_DQN(in_channels, action_space_size).to(device)
 tnet.load_state_dict(qnet.state_dict())
 
-optimizer = optim.Adam(qnet.parameters(), lr=0.0001)
+optimizer = optim.Adam(qnet.parameters(), lr=5e-5)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.9)
 loss_fn = nn.SmoothL1Loss()
 
-memory = deque(maxlen=100000)
+memory = deque(maxlen=300000)
 
 batch_size = 64
 gamma = 0.99
 epsilon = 1.0
 eps_min = 0.02
-eps_decay = 0.9999998
+eps_decay = 0.9999995
 episodes = 50000
 # target_update = 200
 best_avg_reward = -float('inf')
 reward_window = deque(maxlen=100)
-model_file = "2048_cnn_ddqn.pth"
+model_file = "2048_cnn_ddqn_new.pth"
 
 if os.path.exists(model_file):
     print("Loading existing model to resume training...")
@@ -87,7 +87,7 @@ if os.path.exists(model_file):
     qnet.load_state_dict(checkpoint['q_net'])
     tnet.load_state_dict(checkpoint['target_net'])
     optimizer.load_state_dict(checkpoint['optimizer'])
-    # epsilon = checkpoint.get('epsilon', epsilon)
+    epsilon = checkpoint.get('epsilon', epsilon)
 
 for epi in range(episodes):
     curr_state, info = env.reset()
@@ -138,7 +138,7 @@ for epi in range(episodes):
             loss.backward()
             optimizer.step()
 
-            tau = 0.005
+            tau = 0.0025
             for target_param, online_param in zip(tnet.parameters(), qnet.parameters()):
                 target_param.data.copy_(tau * online_param.data + (1.0 - tau) * target_param.data)
         
@@ -162,3 +162,11 @@ for epi in range(episodes):
 
     if epi % 100 == 0:
         print(f"Episode {epi}, reward: {tot_rew}, epsilon: {epsilon:.2f}")
+
+'''
+Okay so I did reach a model that consistently reached 512 with this code itself.
+But I did the mistake of asking gpt of how I can make it better instead of just running it and with some changes in the reward shaping
+and re-running for 20k episodes, my model is not even reaching 128 consistently.
+
+Gonna delete the model and train from scratch again🥲, but with the same stuff. Let's see...
+'''
