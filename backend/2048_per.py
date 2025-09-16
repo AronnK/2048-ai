@@ -143,7 +143,7 @@ qnet = CNN_DuelingDQN(1, action_space_size).to(device)
 tnet = CNN_DuelingDQN(1, action_space_size).to(device)
 tnet.load_state_dict(qnet.state_dict())
 
-optimizer = optim.Adam(qnet.parameters(), lr=1e-5)
+optimizer = optim.Adam(qnet.parameters(), lr=1e-4)
 memory = PERMemory(100000)
 batch_size = 64
 gamma = 0.99
@@ -151,11 +151,12 @@ gamma = 0.99
 epsilon = 0.4
 eps_min = 0.01
 eps_decay = 0.999995
-episodes = 20000
-model_file = "2048_best.pth"
+episodes = 100000
+model_file = "2048_best_new.pth"
 best_avg_reward = -float('inf')
 reward_window = deque(maxlen=100)
 start_episode = 0
+model_file_new = "2048_best_final.pth"
 
 if os.path.exists(model_file):
     print("Loading checkpoint to resume training...")
@@ -164,7 +165,7 @@ if os.path.exists(model_file):
     tnet.load_state_dict(checkpoint['target_net'])
     optimizer.load_state_dict(checkpoint['optimizer'])
     start_episode = checkpoint['episode'] + 1
-    epsilon = checkpoint.get('epsilon', epsilon) 
+    # epsilon = checkpoint.get('epsilon', epsilon) 
     print(f"Resuming from episode {start_episode} with epsilon {epsilon:.4f}")
 
 for epi in range(start_episode, episodes):
@@ -250,4 +251,20 @@ for epi in range(start_episode, episodes):
                 'target_net': tnet.state_dict(),
                 'optimizer': optimizer.state_dict(),
                 'epsilon': epsilon,
-            }, model_file)
+            }, model_file_new)
+
+
+'''
+After around 35k training episodes I feel like my model has reached a plateau cuz for the last 3-4k episodes there have been no improvements...
+The current best 2048_best_new can reach 1024 10% of the time, 512 (with like another 512 or 2-3 256s and 128s just sitting around) 
+80% of the time and ends in 256 or lower itself 10% of the time.
+
+I'm gonna try to run another 5k episodes with 0.4 epsilon and 1e-4 learning rate, hopefully I see some improvements. 
+(Gemini said it was a bad idea tho...)
+
+Also I'm gonna try to pair this current best model with a ExpectiMax algorithm and see how it goes.
+
+If adding exploration rate doesn't help, I'm gonna redesign the architecture and the rewards and whatnot one last time...
+Maybe add in a few more conv layers, do something new with the state representation or something... 
+Idk I'll just fiddle with it, hopefully something works... If it doesn't, then, it will be the end of 2048 project.... :)
+'''
