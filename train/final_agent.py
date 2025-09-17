@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from collections import deque
-from env import Game2048Env 
+from final_env import Game2048Env 
 
 class SumTree:
     """A SumTree is a binary tree where each leaf is a priority, and each parent
@@ -253,18 +253,3 @@ for epi in range(start_episode, episodes):
                 'epsilon': epsilon,
             }, model_file_new)
 
-
-'''
-After around 35k training episodes I feel like my model has reached a plateau cuz for the last 3-4k episodes there have been no improvements...
-The current best 2048_best_new can reach 1024 10% of the time, 512 (with like another 512 or 2-3 256s and 128s just sitting around) 
-80% of the time and ends in 256 or lower itself 10% of the time.
-
-I'm gonna try to run another 5k episodes with 0.4 epsilon and 1e-4 learning rate, hopefully I see some improvements. 
-(Gemini said it was a bad idea tho...)
-
-Also I'm gonna try to pair this current best model with a ExpectiMax algorithm and see how it goes.
-
-If adding exploration rate doesn't help, I'm gonna redesign the architecture and the rewards and whatnot one last time...
-Maybe add in a few more conv layers, do something new with the state representation or something... 
-Idk I'll just fiddle with it, hopefully something works... If it doesn't, then, it will be the end of 2048 project.... :)
-'''

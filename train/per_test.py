@@ -6,9 +6,9 @@ import torch.nn as nn
 import time
 from env import Game2048Env
 
-MODEL_FILE = "2048_best_new.pth"
+MODEL_FILE = "2048_best_final.pth"
 NUM_EPISODES = 10
-ACTION_DELAY = 0.5
+ACTION_DELAY = 0.00001
 
 class CNN_DuelingDQN(nn.Module):
     """The Dueling DQN architecture for better state-value estimation."""

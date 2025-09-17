@@ -490,10 +490,6 @@ WEIGHT_MATRIX = np.array([
 ])
 
 class Game2048Env(gym.Env):
-    """
-    2048 Gym environment with theoretically sound potential-based reward shaping.
-    The final reward is the sum of the base game score and the shaped heuristic reward.
-    """
     metadata = {'render_modes': ['human']}
 
     def __init__(self, render_mode=None,
@@ -517,8 +513,6 @@ class Game2048Env(gym.Env):
 
         self.board = None
         self.render_mode = render_mode
-
-        # Reward shaping params
         self.kappa_invalid = kappa_invalid
         self.w_empty = w_empty
         self.w_mono = w_mono
@@ -536,7 +530,7 @@ class Game2048Env(gym.Env):
 
     def _get_valid_moves(self, board):
         """Returns a boolean array indicating which moves are valid."""
-        valid_moves = [False] * 4 # [up, right, down, left]
+        valid_moves = [False] * 4 
         for i, direction in enumerate(['up', 'right', 'down', 'left']):
             next_board, _ = game.move_board(board, direction)
             if not np.array_equal(board, next_board):

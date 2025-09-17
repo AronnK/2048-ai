@@ -9,7 +9,6 @@ def get_empty_board():
 def add_random_tile(board):
     new_board = np.copy(board)
     empty_cells = list(zip(*np.where(new_board == 0)))
-    
     if not empty_cells:
         return new_board
     
@@ -20,23 +19,19 @@ def add_random_tile(board):
 def slide_and_combine(row):
     new_row = row[row != 0] 
     score_gained = 0
-    result_row = []
     
     i = 0
-    while i < len(new_row):
-        if i + 1 < len(new_row) and new_row[i] == new_row[i+1]:
-            merged_value = new_row[i] * 2
-            result_row.append(merged_value)
-            score_gained += merged_value
-            i += 2
-        else:
-            result_row.append(new_row[i])
-            i += 1
-            
-    while len(result_row) < BOARD_SIZE:
-        result_row.append(0)
+    while i < len(new_row) - 1:
+        if new_row[i] == new_row[i+1]:
+            new_row[i] *= 2
+            score_gained += new_row[i]
+            new_row = np.delete(new_row, i + 1)
+        i += 1
         
-    return np.array(result_row), score_gained
+    padded_row = np.zeros(BOARD_SIZE, dtype=int)
+    padded_row[:len(new_row)] = new_row
+    
+    return padded_row, score_gained
 
 def move_board(board, direction):
     rotated_board = np.copy(board)
@@ -66,16 +61,14 @@ def move_board(board, direction):
     return new_board, total_score_gained
 
 def is_game_over(board):
-    """Checks if the game is over (no empty cells and no possible merges)."""
     if 0 in board:
-        return False
+        return False 
         
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
             current = board[i, j]
-            if j < BOARD_SIZE - 1 and current == board[i, j + 1]:
-                return False
             if i < BOARD_SIZE - 1 and current == board[i + 1, j]:
                 return False
-                
+            if j < BOARD_SIZE - 1 and current == board[i, j + 1]:
+                return False
     return True
