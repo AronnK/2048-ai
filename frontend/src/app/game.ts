@@ -94,3 +94,19 @@ export const isGameOver = (board: number[][]): boolean => {
   }
   return true;
 };
+
+export const getValidMoves = (board: number[][]): boolean[] => {
+  const validMoves = [false, false, false, false]; // up, right, down, left
+  const directions = ["up", "right", "down", "left"] as const;
+
+  for (let i = 0; i < directions.length; i++) {
+    const direction = directions[i];
+    const boardCopy = JSON.parse(JSON.stringify(board));
+    const [nextBoard] = moveBoard(boardCopy, direction);
+    
+    if (JSON.stringify(board) !== JSON.stringify(nextBoard)) {
+      validMoves[i] = true;
+    }
+  }
+  return validMoves;
+};

@@ -53,7 +53,7 @@ if not os.path.exists(MODEL_FILE):
     exit()
 
 print(f"Loading model from {MODEL_FILE}...")
-checkpoint = torch.load(MODEL_FILE, map_location=device)
+checkpoint = torch.load(MODEL_FILE, map_location=device, weights_only=False)
 q_net.load_state_dict(checkpoint['q_net'])
 q_net.eval()
 print("Model loaded successfully!")

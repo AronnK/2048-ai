@@ -147,8 +147,8 @@ optimizer = optim.Adam(qnet.parameters(), lr=1e-4)
 memory = PERMemory(100000)
 batch_size = 64
 gamma = 0.99
-# epsilon = 1.0
-epsilon = 0.4
+epsilon = 0.20
+epsilon = 1.0
 eps_min = 0.01
 eps_decay = 0.999995
 episodes = 100000
@@ -258,7 +258,7 @@ for epi in range(start_episode, episodes):
         else:
             episodes_since_best += 100
 
-        if episodes_since_best >= 2000: 
+        if episodes_since_best >= 2500: 
             print(f"!! Performance has plateaued. Spiking epsilon to re-initiate exploration. !!")
             epsilon = 0.15
             episodes_since_best = 0 
